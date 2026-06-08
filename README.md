@@ -1,5 +1,10 @@
 # Canvas LMS integration for Poke
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+![Python](https://img.shields.io/badge/python-3.10%2B-blue)
+![Protocol: MCP](https://img.shields.io/badge/protocol-MCP-7c3aed)
+[![Security](https://img.shields.io/badge/security-SSRF%20guard%20%2B%20rate%20limit-green)](SECURITY.md)
+
 Connect your **Canvas LMS** account to **[Poke](https://poke.com) by The Interaction Company** so you can ask Poke about your classes in plain language:
 
 > "What's due this week?" · "Did my CS101 grade change?" · "Read me the syllabus page" · "Any new announcements?"
@@ -25,6 +30,17 @@ curl -fsSL https://raw.githubusercontent.com/jackulau/PokeCanvas/main/bootstrap.
 This `bootstrap.sh` installs everything, asks for your Canvas URL + token once, opens a public tunnel, and registers it with Poke for you.
 
 Other hosts (Railway, Fly, Docker, VPS) → **[HOSTING.md](HOSTING.md)**. Step-by-step detail below.
+
+---
+
+## How it's hosted — two models
+
+This is built as a **multi-tenant** server, so there are two ways to run it:
+
+- **Shared instance (least setup):** one deployment serves many people. Each user adds the shared `/mcp` URL in Poke and passes their own Canvas credentials as the integration key — `https://canvas.yourschool.edu::YOUR_CANVAS_TOKEN`. No per-user hosting, nothing to deploy. The server is hardened for untrusted callers: SSRF protection on the Canvas URL, per-user rate limiting (`X-Poke-User-Id`), and it never logs or stores tokens. See **[SECURITY.md](SECURITY.md)**.
+- **Self-host (most private):** deploy your own (the 1-click above), set `CANVAS_BASE_URL` + `CANVAS_API_TOKEN`, connect with no key. Your token never leaves infrastructure you control.
+
+Not sure which? **Self-host** — it's one click and the token stays yours.
 
 ---
 
@@ -153,9 +169,38 @@ python scripts/live_http_test.py http://127.0.0.1:8765/mcp   # -> LIVE_OK
 Poke  ──(MCP over HTTPS, streamable-http at /mcp)──►  this server  ──(REST + Bearer)──►  Canvas LMS API
 ```
 
-- `src/server.py` — FastMCP app (`transport="http"`, `stateless_http=True`), registers the tools.
-- `src/tools.py` — the 14 `@mcp.tool` definitions; build a client from the request, call the data layer, return clean errors.
+- `src/server.py` — FastMCP app (`transport="http"`, `stateless_http=True`), tool + route registration, landing page (`/`), health (`/health`), optional boot ping.
+- `src/tools.py` — the 14 `@mcp.tool` definitions; rate-limit, build a client from the request, call the data layer, return clean errors.
 - `src/canvas_api.py` — one function per resource; maps to Canvas endpoints and trims responses to what matters.
 - `src/canvas_client.py` — async HTTP, credential resolution, and transparent Canvas `Link`-header pagination.
+- `src/security.py` — SSRF guard for the caller-supplied Canvas URL (multi-tenant).
+- `src/ratelimit.py` — per-user sliding-window rate limiter.
+- `src/landing.py` — the self-configuring connect page served at `/`.
 
 See [`recipe/recipe.md`](recipe/recipe.md) for the Poke recipe and onboarding copy.
+
+---
+
+## Security
+
+Read-only, stateless, tokens never stored or logged, HTTPS-only, with SSRF
+protection and per-user rate limiting for shared deployments. Full threat model
+and the self-host-vs-shared tradeoff: **[SECURITY.md](SECURITY.md)**. Report
+vulnerabilities via a private GitHub security advisory.
+
+## Contributing
+
+Issues and PRs welcome.
+
+```bash
+git clone https://github.com/jackulau/PokeCanvas && cd PokeCanvas
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements-dev.txt
+pytest -q && ruff check src tests scripts      # keep both green
+```
+
+Please add a test for any new tool or behavior and keep `ruff` clean.
+
+## License
+
+[MIT](LICENSE) © 2026 jacklau

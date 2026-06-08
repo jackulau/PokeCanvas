@@ -11,6 +11,7 @@ canvas_api.py / canvas_client.py.
 """
 from __future__ import annotations
 
+import hashlib
 from collections.abc import Awaitable, Callable
 from typing import Any
 
@@ -19,23 +20,39 @@ from fastmcp.server.dependencies import get_http_request
 
 from . import canvas_api as api
 from .canvas_client import CanvasClient, CanvasError, resolve_canvas_credentials
+from .ratelimit import RateLimiter
 
 Result = Any
 
+# Per-user rate limit for shared (multi-tenant) deployments. In-memory/per-process.
+_LIMITER = RateLimiter(max_requests=120, window_seconds=60.0)
 
-def _build_client() -> CanvasClient:
-    """Resolve credentials from the current HTTP request + environment."""
-    req = get_http_request()
+
+def _rate_key(request) -> str:
+    """Stable per-user rate-limit key. Prefers Poke's user id; falls back to a
+    hash of the auth header so we never key on (or expose) the raw token."""
+    uid = request.headers.get("x-poke-user-id")
+    if uid:
+        return f"user:{uid}"
+    auth = request.headers.get("authorization", "") or ""
+    return "tok:" + hashlib.sha256(auth.encode()).hexdigest()[:16]
+
+
+def _build_client(request) -> CanvasClient:
+    """Resolve credentials from the request headers + environment."""
     base, token = resolve_canvas_credentials(
-        auth_header=req.headers.get("authorization"),
-        base_url_header=req.headers.get("x-canvas-base-url"),
+        auth_header=request.headers.get("authorization"),
+        base_url_header=request.headers.get("x-canvas-base-url"),
     )
     return CanvasClient(base, token)
 
 
 async def _with_client(fn: Callable[[CanvasClient], Awaitable[Result]]) -> Result:
+    request = get_http_request()
+    if not _LIMITER.allow(_rate_key(request)):
+        return {"error": "Rate limit exceeded. Please slow down and retry shortly.", "status": 429}
     try:
-        client = _build_client()
+        client = _build_client(request)
     except CanvasError as e:
         return {"error": e.message, "status": e.status}
     try:

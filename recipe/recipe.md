@@ -10,10 +10,20 @@ need to create that recipe in Poke's Kitchen. The machine-readable version is
 > account), so this is a copy-paste guide rather than something a script can do
 > for you. It takes ~2 minutes.
 
+## Two ways to run this
+
+- **Shared instance (least setup):** one server serves everyone. Each user adds the
+  shared URL in Poke and passes their own Canvas creds as the key:
+  `https://canvas.theirschool.edu::THEIR_CANVAS_TOKEN`. No per-user hosting. The
+  server is hardened for this (SSRF guard, per-user rate limiting, nothing stored —
+  see [`../SECURITY.md`](../SECURITY.md)).
+- **Self-host:** each user deploys their own server with `CANVAS_BASE_URL` +
+  `CANVAS_API_TOKEN` env vars and connects with no key. Most private.
+
 ## Prerequisite
 
-Deploy the MCP server first (see the repo [README](../README.md) → *Setup*). You'll
-have a URL like `https://your-service.onrender.com/mcp`. Keep it handy.
+Have your server URL ready (shared instance, or your own from the repo
+[README](../README.md) → *Setup*). It looks like `https://your-service.onrender.com/mcp`.
 
 ## Create the recipe
 

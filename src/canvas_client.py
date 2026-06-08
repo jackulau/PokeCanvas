@@ -109,7 +109,12 @@ def resolve_canvas_credentials(
             "https://canvas.university.edu).",
         )
 
-    return normalize_base_url(raw_base), token
+    base = normalize_base_url(raw_base)
+    # SSRF guard — base URL is caller-supplied on multi-tenant deployments.
+    from . import security
+
+    security.assert_safe_canvas_url(base)
+    return base, token
 
 
 def _parse_next_link(link_header: str | None) -> str | None:
