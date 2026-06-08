@@ -72,6 +72,28 @@ the prompt to Poke once and ask it to run on a schedule:
 These rely on the live `get_recent_activity` tool, so they reflect real changes in
 Canvas the moment they happen.
 
+## Connect without the UI (Poke CLI)
+
+If you just want to wire your own server to your own Poke account (no recipe needed),
+one command does it:
+
+```bash
+npx poke@latest mcp add https://<your-host>/mcp -n "Canvas"
+```
+
+With API-key auth (shared/multi-school server), pass the key too:
+
+```bash
+npx poke@latest mcp add https://<your-host>/mcp -n "Canvas" -k "https://canvas.yourschool.edu::YOUR_TOKEN"
+```
+
+### Dynamic Client Registration (DCR)
+This server uses simple env-var / Bearer auth, which Poke supports directly — there's
+nothing to pre-register. If you later add OAuth, MCP servers that implement **Dynamic
+Client Registration** are picked up by Poke automatically (no manual client-id/secret);
+otherwise you'd register OAuth credentials once via a Kitchen template. For Canvas,
+the token path here is simpler and recommended.
+
 ## Test the recipe
 
 Open your share link (or your own Poke), then message:

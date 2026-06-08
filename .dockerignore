@@ -1,0 +1,13 @@
+.git/
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.claude-workspace/
+tests/
+scripts/
+.env
+*.local
+.DS_Store

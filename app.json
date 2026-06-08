@@ -1,0 +1,22 @@
+{
+  "name": "Canvas Poke MCP",
+  "description": "Canvas LMS MCP server for Poke — courses, assignments, grades, deadlines, announcements, and to-dos, answered live.",
+  "repository": "https://github.com/jackulau/PokeCanvas",
+  "logo": "https://raw.githubusercontent.com/jackulau/PokeCanvas/main/.github/logo.png",
+  "keywords": ["mcp", "poke", "canvas", "lms", "fastmcp", "education"],
+  "stack": "heroku-24",
+  "buildpacks": [{ "url": "heroku/python" }],
+  "env": {
+    "CANVAS_BASE_URL": {
+      "description": "Your institution's Canvas URL, e.g. https://canvas.university.edu",
+      "required": true
+    },
+    "CANVAS_API_TOKEN": {
+      "description": "Your Canvas personal access token (Account -> Settings -> New Access Token).",
+      "required": true
+    }
+  },
+  "formation": {
+    "web": { "quantity": 1, "size": "basic" }
+  }
+}

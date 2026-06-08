@@ -31,38 +31,40 @@ Every resource you asked for, each as an MCP tool Poke calls on demand:
 
 ---
 
-## Setup (about 5 minutes, then hands-off)
+## Setup
+
+Three steps. **Fastest path with no signup: `./setup.sh`** — it installs deps, asks for
+your Canvas URL + token once, opens a public tunnel, and registers it with Poke for you.
+Prefer real 24/7 hosting? Full per-host instructions live in **[HOSTING.md](HOSTING.md)**.
 
 ### 1. Get your Canvas access token
-In Canvas: **Account → Settings → Approved Integrations → "+ New Access Token"**. Give it a purpose ("Poke"), leave expiry blank or far out, and copy the token (you only see it once).
+In Canvas: **Account → Settings → Approved Integrations → "+ New Access Token"**. Copy it (shown once). Note your Canvas URL — where you log in, e.g. `https://canvas.university.edu`.
 
-Also note your Canvas URL — the address you log in at, e.g. `https://canvas.university.edu`.
+### 2. Deploy the server — pick one
 
-### 2. Deploy the server
+**One-click hosted:**
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/jackulau/PokeCanvas) &nbsp; [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/jackulau/PokeCanvas)
 
-1. Push this repo to your own GitHub account (`gh repo create canvas-poke-mcp --public --source . --push`, or fork it).
-2. On [Render](https://render.com): **New → Blueprint** (or **Web Service**) → connect that repo. Render reads `render.yaml` automatically.
-3. When prompted, set the two environment variables:
-   - `CANVAS_BASE_URL` = your Canvas URL (e.g. `https://canvas.university.edu`)
-   - `CANVAS_API_TOKEN` = the token from step 1
-4. Deploy. Your server URL will be `https://<your-service>.onrender.com/mcp` — **note the `/mcp` and no trailing slash.**
+**Or local, no signup:**
+```bash
+git clone https://github.com/jackulau/PokeCanvas && cd PokeCanvas
+./setup.sh
+```
 
-> Render's free tier sleeps after ~15 min idle, so the *first* request after a nap can take ~50s to wake. Subsequent calls are fast. Upgrade to a paid instance (or any always-on host) if you want zero cold starts.
+Set `CANVAS_BASE_URL` + `CANVAS_API_TOKEN` on whichever host you pick. Every option ends with a URL like `https://<host>/mcp` — **note the `/mcp`, no trailing slash.** Render / Railway / Fly / Heroku / Docker / VPS / tunnel details → **[HOSTING.md](HOSTING.md)**.
 
-Any host works (Railway, Fly, Heroku, your own box) — it's a standard Python web service started with `python src/server.py`, reading `PORT` from the environment.
+> Render's free tier sleeps after ~15 min idle (first request after a nap ~50s). Railway/Fly/Heroku or your own Docker host avoid cold starts.
 
 ### 3. Connect it to Poke
 
-Because the credentials live on your server (step 2), Poke needs **no API key** — just the URL.
+Because the credentials live on your server, Poke needs **no API key** — just the URL.
 
-1. Open [poke.com/settings/connections](https://poke.com/settings/connections) → **New integration**.
-2. **Name:** `Canvas`   **Server URL:** `https://<your-service>.onrender.com/mcp`
-3. Leave the API key blank → **Create integration**. Poke connects and discovers all the tools.
-4. Test it: message Poke **"What courses am I taking?"**
+- **One command:** `npx poke@latest mcp add https://<host>/mcp -n "Canvas"`
+- **Or web UI:** [poke.com/settings/connections](https://poke.com/settings/connections) → **New integration** → Name `Canvas`, URL `https://<host>/mcp`, leave the API key **blank** → Create.
+- **Or shareable recipe** (Poke sets it up for any user from one link): [`recipe/recipe.md`](recipe/recipe.md).
 
-For one-message, shareable setup, see [`recipe/`](recipe/) — a Poke **recipe** that bundles this integration with onboarding context so a new user is ready after a single click.
+Then message Poke **"What courses am I taking?"**
 
 ---
 
