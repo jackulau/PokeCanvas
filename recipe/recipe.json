@@ -1,0 +1,28 @@
+{
+  "name": "Canvas Study Buddy",
+  "description": "Ask Poke about your Canvas courses, assignments, grades, deadlines, announcements, and to-dos — answered live from your real Canvas account.",
+  "required_integrations": [
+    {
+      "name": "Canvas",
+      "type": "mcp",
+      "server_url": "https://<your-service>.onrender.com/mcp",
+      "auth": "none",
+      "shareable": false,
+      "note": "Credentials live on the server as env vars (CANVAS_BASE_URL + CANVAS_API_TOKEN), so users connect with no API key. For a shared multi-school server, set auth to 'api_key' and have each user paste 'https://canvas.theirschool.edu::THEIR_TOKEN'."
+    }
+  ],
+  "onboarding_context": "You help a student stay on top of their Canvas LMS coursework. You have a Canvas integration with read-only tools. Always start with list_courses to learn the student's courses and their ids before calling course-scoped tools (assignments, quizzes, modules, pages, files, discussions). Use list_todos and list_upcoming_events for 'what's due', and get_recent_activity for 'what changed / what's new'. Canvas data is live, so never say it might be stale. When listing due dates, sort soonest-first and show the course name. Be concise and proactive about deadlines.",
+  "first_message": "Hey! I'm linked to your Canvas now. Want me to show what's due this week, or catch you up on anything new across your courses?",
+  "automations": [
+    {
+      "name": "Morning Canvas digest",
+      "schedule": "every weekday at 8:00am",
+      "prompt": "Call get_recent_activity and list_upcoming_events. If there's anything new since yesterday (new announcements, grade changes, newly due/assigned work), text me a short bulleted digest grouped by course. If nothing changed, stay quiet."
+    },
+    {
+      "name": "Grade-change watch",
+      "schedule": "every day at 6:00pm",
+      "prompt": "Call get_recent_activity. If any item is a grade change or new submission comment, text me which course and assignment changed."
+    }
+  ]
+}

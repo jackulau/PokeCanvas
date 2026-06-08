@@ -1,0 +1,18 @@
+[project]
+name = "canvas-poke-integration"
+version = "1.0.0"
+description = "Canvas LMS integration (MCP server) for Poke by The Interaction Company"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "UP", "B"]
+ignore = ["E501"]

@@ -1,0 +1,5 @@
+# Pinned to the FastMCP v3 line this server was built and verified against.
+# The upper bound keeps a future breaking major from silently landing on deploy.
+fastmcp>=3.4,<4
+uvicorn>=0.35.0
+httpx>=0.27.0

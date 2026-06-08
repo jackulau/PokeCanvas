@@ -1,0 +1,20 @@
+# Render blueprint — one-click deploy of the Canvas LMS MCP server.
+# Render auto-detects this file when you create a Blueprint / Web Service from
+# the repo. PORT is injected by Render automatically.
+services:
+  - type: web
+    name: canvas-poke-mcp
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python src/server.py
+    autoDeploy: true
+    envVars:
+      # Your institution's Canvas URL, e.g. https://canvas.university.edu
+      - key: CANVAS_BASE_URL
+        sync: false
+      # Your Canvas personal access token (Account -> Settings -> New Access Token)
+      - key: CANVAS_API_TOKEN
+        sync: false
+      - key: ENVIRONMENT
+        value: production
