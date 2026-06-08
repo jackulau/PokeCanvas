@@ -27,6 +27,37 @@ def test_blocks_unsafe_targets(url):
         assert_safe_canvas_url(url)
 
 
+@pytest.mark.parametrize(
+    "url",
+    [
+        "https://2130706433",  # decimal 127.0.0.1
+        "https://0x7f000001",  # hex 127.0.0.1
+        "https://0177.0.0.1",  # dotted-octal 127.0.0.1
+        "https://0x7f.0.0.1",  # mixed-base
+        "https://127.1",  # short form -> 127.0.0.1
+        "https://2852039166",  # decimal 169.254.169.254 (metadata)
+        "https://[::ffff:127.0.0.1]",  # IPv4-mapped IPv6 loopback
+        "https://[fd00::1]",  # IPv6 unique-local
+    ],
+)
+def test_blocks_encoded_ip_bypasses(url):
+    with pytest.raises(CanvasError):
+        assert_safe_canvas_url(url)
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "https://canvas.university.edu",
+        "https://canvas.test",
+        "https://canvas.instructure.com",
+        "https://my-canvas.school.edu",
+    ],
+)
+def test_allows_legit_canvas_hosts(url):
+    assert_safe_canvas_url(url)  # must not raise
+
+
 def test_resolve_blocks_ssrf_via_composite():
     with pytest.raises(CanvasError) as exc:
         resolve_canvas_credentials(auth_header="Bearer https://169.254.169.254::tok", env={})
