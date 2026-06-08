@@ -16,5 +16,9 @@ services:
       # Your Canvas personal access token (Account -> Settings -> New Access Token)
       - key: CANVAS_API_TOKEN
         sync: false
+      # Optional: a Poke API key (poke.com/settings/advanced/api-keys/create).
+      # If set, the server sends you a "Canvas is live" confirmation on boot.
+      - key: POKE_API_KEY
+        sync: false
       - key: ENVIRONMENT
         value: production

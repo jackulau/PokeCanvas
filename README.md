@@ -10,6 +10,24 @@ All data is read **live** on every request, so answers always reflect the curren
 
 ---
 
+## ⚡ 1-click setup
+
+**Hosted — no terminal.** Click, set 2 fields, deploy:
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/jackulau/PokeCanvas) &nbsp; [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/jackulau/PokeCanvas)
+
+On the deploy screen set `CANVAS_BASE_URL` + `CANVAS_API_TOKEN`. Then **open your new service URL in a browser** — the page shows your live MCP link and a one-tap-copy `npx poke@latest mcp add …` command already filled in with your URL. Paste it and Poke is connected. (Set the optional `POKE_API_KEY` too and the server texts you a "Canvas is live" confirmation on boot.)
+
+**Local — one paste:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/jackulau/PokeCanvas/main/bootstrap.sh | bash
+```
+This `bootstrap.sh` installs everything, asks for your Canvas URL + token once, opens a public tunnel, and registers it with Poke for you.
+
+Other hosts (Railway, Fly, Docker, VPS) → **[HOSTING.md](HOSTING.md)**. Step-by-step detail below.
+
+---
+
 ## What Poke can see
 
 Every resource you asked for, each as an MCP tool Poke calls on demand:

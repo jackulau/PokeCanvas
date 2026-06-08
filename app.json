@@ -14,6 +14,10 @@
     "CANVAS_API_TOKEN": {
       "description": "Your Canvas personal access token (Account -> Settings -> New Access Token).",
       "required": true
+    },
+    "POKE_API_KEY": {
+      "description": "Optional. A Poke API key (poke.com/settings/advanced/api-keys/create) — if set, the server sends a 'Canvas is live' confirmation to Poke on boot.",
+      "required": false
     }
   },
   "formation": {
