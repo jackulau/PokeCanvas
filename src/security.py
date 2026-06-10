@@ -15,6 +15,7 @@ Caveat (documented in SECURITY.md): hostnames are not resolved, so a
 DNS-rebinding attacker could still point a public name at a private IP. The
 definitive control for a hardened deployment is an egress-restricted network.
 """
+
 from __future__ import annotations
 
 import ipaddress
@@ -90,14 +91,7 @@ def _candidate_ips(host: str) -> list[ipaddress._BaseAddress]:
 
 
 def _is_unsafe_ip(ip: ipaddress._BaseAddress) -> bool:
-    if (
-        ip.is_private
-        or ip.is_loopback
-        or ip.is_link_local
-        or ip.is_reserved
-        or ip.is_multicast
-        or ip.is_unspecified
-    ):
+    if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved or ip.is_multicast or ip.is_unspecified:
         return True
     mapped = getattr(ip, "ipv4_mapped", None)
     return mapped is not None and _is_unsafe_ip(mapped)

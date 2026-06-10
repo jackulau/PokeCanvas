@@ -4,6 +4,7 @@ Visiting the service root shows the user their own live MCP URL and the exact,
 pre-filled command to connect it to Poke — so after a one-click deploy there's
 nothing to look up or assemble. Kept as a pure function for easy testing.
 """
+
 from __future__ import annotations
 
 import html
@@ -14,8 +15,7 @@ def render_landing(mcp_url: str, creds_ok: bool) -> str:
     url_e = html.escape(mcp_url, quote=True)
     cli_e = html.escape(f'npx poke@latest mcp add {mcp_url} -n "Canvas"')
     status = (
-        '<p class="ok">✅ Canvas credentials are configured on this server. '
-        "Connect to Poke with no API key.</p>"
+        '<p class="ok">✅ Canvas credentials are configured on this server. Connect to Poke with no API key.</p>'
         if creds_ok
         else '<p class="warn">⚠️ Set <code>CANVAS_BASE_URL</code> and '
         "<code>CANVAS_API_TOKEN</code> in this host's environment, then redeploy.</p>"

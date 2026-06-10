@@ -46,9 +46,7 @@ async def test_fetch_assignments_includes_submission():
 @respx.mock
 async def test_fetch_assignments_handles_no_submission():
     respx.get(f"{BASE}/api/v1/courses/101/assignments").mock(
-        return_value=httpx.Response(
-            200, json=[{"id": 2, "name": "Reading", "due_at": None, "points_possible": 0}]
-        )
+        return_value=httpx.Response(200, json=[{"id": 2, "name": "Reading", "due_at": None, "points_possible": 0}])
     )
     items = await api.fetch_assignments(client(), 101)
     assert items[0]["submission"] == {}
@@ -99,9 +97,7 @@ async def test_fetch_calendar_events_with_filters():
             ],
         )
     )
-    items = await api.fetch_calendar_events(
-        client(), start_date="2026-06-01", end_date="2026-06-30", course_id=101
-    )
+    items = await api.fetch_calendar_events(client(), start_date="2026-06-01", end_date="2026-06-30", course_id=101)
     assert items[0]["title"] == "Lecture"
     assert items[0]["context_code"] == "course_101"
     # Verify the filters were actually sent to Canvas.

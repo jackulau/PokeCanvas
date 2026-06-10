@@ -70,8 +70,6 @@ def test_resolve_blocks_private_ip_base_header():
 
 
 def test_resolve_allows_normal_composite():
-    base, token = resolve_canvas_credentials(
-        auth_header="Bearer https://canvas.uni.edu::tok", env={}
-    )
+    base, token = resolve_canvas_credentials(auth_header="Bearer https://canvas.uni.edu::tok", env={})
     assert base == "https://canvas.uni.edu"
     assert token == "tok"

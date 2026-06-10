@@ -9,6 +9,7 @@ Responsibilities kept deliberately small and testable:
 No global state: a fresh client is built per request so the server stays
 stateless (required by Poke's stateless_http transport).
 """
+
 from __future__ import annotations
 
 import os
@@ -90,11 +91,7 @@ def resolve_canvas_credentials(
     if not token:
         token = (env.get("CANVAS_API_TOKEN") or "").strip()
 
-    raw_base = (
-        composite_base
-        or (base_url_header or "").strip()
-        or (env.get("CANVAS_BASE_URL") or "").strip()
-    )
+    raw_base = composite_base or (base_url_header or "").strip() or (env.get("CANVAS_BASE_URL") or "").strip()
 
     if not token:
         raise CanvasError(
@@ -105,8 +102,7 @@ def resolve_canvas_credentials(
     if not raw_base:
         raise CanvasError(
             401,
-            "No Canvas base URL. Set CANVAS_BASE_URL on the server (e.g. "
-            "https://canvas.university.edu).",
+            "No Canvas base URL. Set CANVAS_BASE_URL on the server (e.g. https://canvas.university.edu).",
         )
 
     base = normalize_base_url(raw_base)

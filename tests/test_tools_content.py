@@ -91,7 +91,13 @@ async def test_fetch_pages_and_page_body():
         return_value=httpx.Response(
             200,
             json=[
-                {"page_id": 1, "url": "syllabus", "title": "Syllabus", "updated_at": "2026-06-01T00:00:00Z", "published": True}
+                {
+                    "page_id": 1,
+                    "url": "syllabus",
+                    "title": "Syllabus",
+                    "updated_at": "2026-06-01T00:00:00Z",
+                    "published": True,
+                }
             ],
         )
     )

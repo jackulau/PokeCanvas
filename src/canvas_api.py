@@ -8,6 +8,7 @@ coupling makes them unit-testable with a mocked client.
 All data is fetched live on every call, so results always reflect the current
 state of Canvas (new assignments, changed grades, fresh announcements, ...).
 """
+
 from __future__ import annotations
 
 import re
@@ -97,9 +98,7 @@ async def fetch_todos(client: CanvasClient) -> list[dict[str, Any]]:
 async def fetch_recent_activity(client: CanvasClient, limit: int = ACTIVITY_LIMIT) -> list[dict[str, Any]]:
     """Canvas activity stream — the live feed of what recently changed:
     new announcements, submission comments, grade changes, discussion replies."""
-    raw = await client.get_list(
-        "users/self/activity_stream", {"only_active_courses": "true"}, max_items=limit
-    )
+    raw = await client.get_list("users/self/activity_stream", {"only_active_courses": "true"}, max_items=limit)
     out = []
     for a in raw:
         if not isinstance(a, dict):
@@ -162,9 +161,7 @@ async def fetch_assignments(
     return out
 
 
-async def fetch_quizzes(
-    client: CanvasClient, course_id: int, limit: int = DEFAULT_LIST_LIMIT
-) -> list[dict[str, Any]]:
+async def fetch_quizzes(client: CanvasClient, course_id: int, limit: int = DEFAULT_LIST_LIMIT) -> list[dict[str, Any]]:
     raw = await client.get_list(f"courses/{course_id}/quizzes", max_items=limit)
     return [
         _pick(
@@ -242,12 +239,8 @@ async def fetch_discussions(
     return out
 
 
-async def fetch_modules(
-    client: CanvasClient, course_id: int, limit: int = DEFAULT_LIST_LIMIT
-) -> list[dict[str, Any]]:
-    raw = await client.get_list(
-        f"courses/{course_id}/modules", {"include[]": ["items"]}, max_items=limit
-    )
+async def fetch_modules(client: CanvasClient, course_id: int, limit: int = DEFAULT_LIST_LIMIT) -> list[dict[str, Any]]:
+    raw = await client.get_list(f"courses/{course_id}/modules", {"include[]": ["items"]}, max_items=limit)
     out = []
     for m in raw:
         if not isinstance(m, dict):
@@ -262,12 +255,8 @@ async def fetch_modules(
     return out
 
 
-async def fetch_pages(
-    client: CanvasClient, course_id: int, limit: int = DEFAULT_LIST_LIMIT
-) -> list[dict[str, Any]]:
-    raw = await client.get_list(
-        f"courses/{course_id}/pages", {"sort": "updated_at", "order": "desc"}, max_items=limit
-    )
+async def fetch_pages(client: CanvasClient, course_id: int, limit: int = DEFAULT_LIST_LIMIT) -> list[dict[str, Any]]:
+    raw = await client.get_list(f"courses/{course_id}/pages", {"sort": "updated_at", "order": "desc"}, max_items=limit)
     return [
         _pick(p, ["page_id", "url", "title", "updated_at", "published", "front_page"])
         for p in raw
@@ -282,12 +271,8 @@ async def fetch_page(client: CanvasClient, course_id: int, page_url: str) -> dic
     return item
 
 
-async def fetch_files(
-    client: CanvasClient, course_id: int, limit: int = DEFAULT_LIST_LIMIT
-) -> list[dict[str, Any]]:
-    raw = await client.get_list(
-        f"courses/{course_id}/files", {"sort": "updated_at", "order": "desc"}, max_items=limit
-    )
+async def fetch_files(client: CanvasClient, course_id: int, limit: int = DEFAULT_LIST_LIMIT) -> list[dict[str, Any]]:
+    raw = await client.get_list(f"courses/{course_id}/files", {"sort": "updated_at", "order": "desc"}, max_items=limit)
     return [
         _pick(
             f,

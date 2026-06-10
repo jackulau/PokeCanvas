@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Smoke test: import the server and assert every expected tool is registered
 with a usable schema. Prints TOOLS_OK on success. No network required."""
+
 import asyncio
 import os
 import sys

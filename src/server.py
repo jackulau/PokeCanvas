@@ -4,6 +4,7 @@
 Run locally:   python src/server.py        (serves streamable HTTP at /mcp)
 Render uses:   python src/server.py         (PORT injected by the platform)
 """
+
 import os
 import sys
 
@@ -42,6 +43,7 @@ def public_base_url(request: Request | None = None) -> str:
 
 def _creds_configured() -> bool:
     return bool(os.environ.get("CANVAS_BASE_URL") and os.environ.get("CANVAS_API_TOKEN"))
+
 
 mcp = FastMCP(
     "Canvas LMS",

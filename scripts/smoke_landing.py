@@ -3,6 +3,7 @@
 
 Usage: python scripts/smoke_landing.py http://127.0.0.1:8765
 """
+
 import sys
 
 import httpx

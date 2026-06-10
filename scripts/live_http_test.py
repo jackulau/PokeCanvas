@@ -6,6 +6,7 @@ Prints LIVE_OK on success.
 
 Usage: python scripts/live_http_test.py http://127.0.0.1:8765/mcp
 """
+
 import asyncio
 import json
 import sys
@@ -40,9 +41,11 @@ async def main(url: str) -> int:
     async with httpx.AsyncClient(timeout=20, follow_redirects=True) as client:
         # 1. initialize
         r = await rpc(
-            client, url, "initialize",
-            {"protocolVersion": "2025-06-18", "capabilities": {},
-             "clientInfo": {"name": "livetest", "version": "1"}}, id_=1,
+            client,
+            url,
+            "initialize",
+            {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "livetest", "version": "1"}},
+            id_=1,
         )
         if r.status_code != 200:
             print("initialize failed", r.status_code, r.text[:300])
@@ -66,8 +69,12 @@ async def main(url: str) -> int:
 
         # 4. tools/call without credentials -> clean 401 error, not a crash
         r = await rpc(
-            client, url, "tools/call",
-            {"name": "list_courses", "arguments": {}}, sid=sid, id_=3,
+            client,
+            url,
+            "tools/call",
+            {"name": "list_courses", "arguments": {}},
+            sid=sid,
+            id_=3,
         )
         payload = json.dumps(parse_sse(r.text))
         print("list_courses (no creds) ->", payload[:200])

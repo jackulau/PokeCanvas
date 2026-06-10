@@ -34,9 +34,7 @@ def test_raw_token_without_bearer_prefix():
 
 
 def test_composite_base_and_token_in_bearer():
-    base, token = resolve_canvas_credentials(
-        auth_header="Bearer https://canvas.uni.edu::abc999", env={}
-    )
+    base, token = resolve_canvas_credentials(auth_header="Bearer https://canvas.uni.edu::abc999", env={})
     assert base == "https://canvas.uni.edu"
     assert token == "abc999"
 
@@ -113,9 +111,7 @@ async def test_get_returns_json():
 
 @respx.mock
 async def test_get_sends_bearer_header():
-    route = respx.get("https://canvas.test/api/v1/users/self").mock(
-        return_value=httpx.Response(200, json={"id": 1})
-    )
+    route = respx.get("https://canvas.test/api/v1/users/self").mock(return_value=httpx.Response(200, json={"id": 1}))
     client = CanvasClient("https://canvas.test", "secret-tok")
     await client.get("users/self")
     assert route.calls.last.request.headers["Authorization"] == "Bearer secret-tok"
@@ -123,9 +119,7 @@ async def test_get_sends_bearer_header():
 
 @respx.mock
 async def test_get_401_raises_canvas_error():
-    respx.get("https://canvas.test/api/v1/users/self").mock(
-        return_value=httpx.Response(401, text="unauthorized")
-    )
+    respx.get("https://canvas.test/api/v1/users/self").mock(return_value=httpx.Response(401, text="unauthorized"))
     client = CanvasClient("https://canvas.test", "bad")
     with pytest.raises(CanvasError) as exc:
         await client.get("users/self")

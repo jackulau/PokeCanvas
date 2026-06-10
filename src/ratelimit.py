@@ -7,6 +7,7 @@ injectable for deterministic tests.
 Note: in-memory = per-process. A multi-instance deployment that needs a global
 limit should back this with Redis; documented in SECURITY.md.
 """
+
 from __future__ import annotations
 
 import threading

@@ -6,6 +6,7 @@ is live and suggesting what to ask. This does NOT add the MCP integration
 itself (Poke only supports that via its web UI or the `poke mcp add` CLI) — it's
 a best-effort, non-fatal "you're connected" nudge.
 """
+
 from __future__ import annotations
 
 import os
@@ -17,9 +18,7 @@ import httpx
 POKE_INBOUND_API = "https://poke.com/api/v1/inbound/api-message"
 
 
-async def announce_to_poke(
-    mcp_url: str, *, api_key: str | None = None, timeout: float = 10.0
-) -> bool:
+async def announce_to_poke(mcp_url: str, *, api_key: str | None = None, timeout: float = 10.0) -> bool:
     """Send a one-off confirmation message to Poke. Returns True on success,
     False if there's no key or the request fails (never raises)."""
     key = (api_key or os.environ.get("POKE_API_KEY") or "").strip()

@@ -9,6 +9,7 @@ Each tool:
 Tool functions are thin on purpose — the real logic and its tests live in
 canvas_api.py / canvas_client.py.
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -98,9 +99,7 @@ def register_tools(mcp: FastMCP) -> None:
     async def get_recent_activity(limit: int = 25) -> Result:
         return await _with_client(lambda c: api.fetch_recent_activity(c, limit))
 
-    @mcp.tool(
-        description="List upcoming events and assignment due dates across all courses, soonest first."
-    )
+    @mcp.tool(description="List upcoming events and assignment due dates across all courses, soonest first.")
     async def list_upcoming_events() -> Result:
         return await _with_client(api.fetch_upcoming)
 
@@ -114,8 +113,7 @@ def register_tools(mcp: FastMCP) -> None:
         return await _with_client(lambda c: api.fetch_assignments(c, course_id, limit))
 
     @mcp.tool(
-        description="List quizzes for a course (title, due date, points, question count, attempts). "
-        "Requires course_id."
+        description="List quizzes for a course (title, due date, points, question count, attempts). Requires course_id."
     )
     async def list_quizzes(course_id: int, limit: int = 50) -> Result:
         return await _with_client(lambda c: api.fetch_quizzes(c, course_id, limit))
@@ -130,9 +128,7 @@ def register_tools(mcp: FastMCP) -> None:
         course_id: int | None = None,
         limit: int = 50,
     ) -> Result:
-        return await _with_client(
-            lambda c: api.fetch_calendar_events(c, start_date, end_date, course_id, limit)
-        )
+        return await _with_client(lambda c: api.fetch_calendar_events(c, start_date, end_date, course_id, limit))
 
     # ---- content ----------------------------------------------------------
 
@@ -153,8 +149,7 @@ def register_tools(mcp: FastMCP) -> None:
         return await _with_client(run)
 
     @mcp.tool(
-        description="List discussion topics for a course (title, message preview, last reply time). "
-        "Requires course_id."
+        description="List discussion topics for a course (title, message preview, last reply time). Requires course_id."
     )
     async def list_discussions(course_id: int, limit: int = 50) -> Result:
         return await _with_client(lambda c: api.fetch_discussions(c, course_id, limit))
